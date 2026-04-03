@@ -23,14 +23,40 @@ final class placemaking_iosUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testCreateProjectAndUpdateZoneStatus() throws {
         let app = XCUIApplication()
+        app.launchArguments.append("UI_TESTING")
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // XCUIAutomation Documentation
-        // https://developer.apple.com/documentation/xcuiautomation
+        XCTAssertTrue(app.buttons["createProjectButton"].waitForExistence(timeout: 2))
+        app.buttons["createProjectButton"].tap()
+
+        let projectNameField = app.textFields["projectNameField"]
+        XCTAssertTrue(projectNameField.waitForExistence(timeout: 2))
+        projectNameField.tap()
+        projectNameField.typeText("Campus North")
+
+        app.buttons["locationChoiceArbitrary"].tap()
+
+        let confirmBoundaryButton = app.buttons["confirmBoundaryButton"]
+        XCTAssertTrue(confirmBoundaryButton.waitForExistence(timeout: 2))
+        confirmBoundaryButton.tap()
+
+        let createButton = app.buttons["createProjectSubmitButton"]
+        XCTAssertTrue(createButton.isEnabled)
+        createButton.tap()
+
+        XCTAssertTrue(app.staticTexts["Project Overview"].waitForExistence(timeout: 3))
+
+        let firstZone = app.buttons["zoneTile_A1"]
+        XCTAssertTrue(firstZone.waitForExistence(timeout: 2))
+        firstZone.tap()
+
+        let progressButton = app.buttons["markZoneInProgressButton"]
+        XCTAssertTrue(progressButton.waitForExistence(timeout: 2))
+        progressButton.tap()
+
+        XCTAssertTrue(app.staticTexts["In Progress"].waitForExistence(timeout: 2))
     }
 
     @MainActor
